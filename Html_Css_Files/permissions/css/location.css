@@ -1,0 +1,14 @@
+:root{--brand:#ff6a00;--text:#0f172a;--muted:#6b7280;--radius:28px;--shadow:0 12px 40px rgba(0,0,0,.06)}
+*{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+html,body{height:100%;margin:0;background:#fff;color:var(--text)}
+.screen{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:20px 16px}
+.phone{width:min(375px,100%);min-height:700px;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid #eee;overflow:hidden;position:relative;background:#fff}
+.wrap{width:100%;padding:24px 18px 28px;text-align:center}
+.hero{display:flex;justify-content:center;margin:10px 0 20px}
+.hero img{width:72%;max-width:320px;height:auto;border-radius:50%}
+.title{font-size:20px;font-weight:800;margin:0 0 10px}
+.note{color:var(--muted);font-size:13px;line-height:1.5;margin-top:12px}
+.btn{width:100%;padding:14px 16px;border:none;border-radius:14px;background:var(--brand);color:#fff;font-weight:800;cursor:pointer}
+.btn:active{transform:scale(.99)}
+.bad{color:#b00020;margin-top:10px;font-size:13px}
+.hidden{display:none}
