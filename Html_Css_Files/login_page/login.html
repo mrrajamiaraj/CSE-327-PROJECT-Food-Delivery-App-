@@ -6,33 +6,36 @@
   <title>Log In</title>
   <link rel="stylesheet" href="css/auth.css" />
   <style>
-    .hero-text {
-      text-align: center;
-      transform: translateY(20px);
+    .hero {
+      align-items: center !important;
+      justify-content: center !important;
+      padding-bottom: 0 !important;
     }
-    .hero-text h1 {
+    .hero-content {
+      text-align: center;
+      transform: translateY(-10px);
+    }
+    .hero-content h1 {
+      margin: 0 0 6px;
       font-size: 28px;
       font-weight: 800;
-      margin: 0 0 8px;
     }
-    .hero-text p {
+    .hero-content p {
+      margin: 0;
       font-size: 14px;
       color: #c6cbe0;
-      margin: 0;
     }
   </style>
 </head>
 <body>
   <div class="screen">
-    <!-- Top dark section -->
-    <section class="hero" style="flex-direction:column; justify-content:flex-end; padding-bottom:30px">
-      <div class="hero-text">
+    <section class="hero">
+      <div class="hero-content">
         <h1>Log In</h1>
         <p>Please sign in to your existing account</p>
       </div>
     </section>
 
-    <!-- White sheet -->
     <section class="sheet">
       <form onsubmit="return doLogin(event)">
         <label for="email">EMAIL</label>
@@ -61,9 +64,7 @@
     }
     function doLogin(e){
       e.preventDefault();
-      
       alert('Logged in (demo)');
-      
       return false;
     }
   </script>

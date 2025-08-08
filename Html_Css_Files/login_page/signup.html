@@ -5,22 +5,42 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Sign Up</title>
   <link rel="stylesheet" href="css/auth.css" />
+  <style>
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      transform: translateY(-10px);
+      position: relative;
+    }
+    .back-btn {
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <div class="screen">
-    <section class="hero" style="align-items:flex-start; padding-top:20px">
-      <button class="link" onclick="history.back()" aria-label="Back">←</button>
-      <div style="margin:auto; text-align:center; transform:translateY(40px)">
+    <section class="hero">
+      <div class="hero-content">
+        <button class="back-btn" onclick="history.back()" aria-label="Back">←</button>
         <h1>Sign Up</h1>
         <p>Please sign up to get started</p>
       </div>
     </section>
 
-    
     <section class="sheet">
       <form onsubmit="return doSignup(event)">
         <label for="name">NAME</label>
-        <input id="name" class="input" type="text" placeholder="John Doe" required />
+        <input id="name" class="input" type="text" placeholder="raja mia rak" required />
 
         <label for="semail">EMAIL</label>
         <input id="semail" class="input" type="email" placeholder="example@gmail.com" required />
@@ -31,7 +51,7 @@
           <button class="eye" type="button" onclick="toggle('spassword')">👁️</button>
         </div>
 
-        <label for="repass">RE‑TYPE PASSWORD</label>
+        <label for="repass">RE-TYPE PASSWORD</label>
         <div class="row">
           <input id="repass" class="input" type="password" placeholder="••••••••" required style="flex:1" />
           <button class="eye" type="button" onclick="toggle('repass')">👁️</button>
@@ -51,8 +71,11 @@
       e.preventDefault();
       const p1 = document.getElementById('spassword').value;
       const p2 = document.getElementById('repass').value;
-      if(p1 !== p2){ alert('Passwords do not match'); return false; }
-      alert('Account created (demo). Please login.');
+      if(p1 !== p2){
+        alert('Passwords do not match');
+        return false;
+      }
+      alert('Account created (demo)');
       location.href = 'login.html';
       return false;
     }
