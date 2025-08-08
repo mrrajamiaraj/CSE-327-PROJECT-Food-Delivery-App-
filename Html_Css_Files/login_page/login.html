@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Log In</title>
+  <link rel="stylesheet" href="css/auth.css" />
+</head>
+<body>
+  <div class="screen">
+    <!-- Top dark section -->
+    <section class="hero">
+      <div>
+        <h1>Log In</h1>
+        <p>Please sign in to your existing account</p>
+      </div>
+    </section>
+
+    <!-- White sheet -->
+    <section class="sheet">
+      <form onsubmit="return doLogin(event)">
+        <label for="email">EMAIL</label>
+        <input id="email" class="input" type="email" placeholder="example@gmail.com" required />
+
+        <label for="password">PASSWORD</label>
+        <div class="row">
+          <input id="password" class="input" type="password" placeholder="••••••••" required style="flex:1" />
+          <button class="eye" type="button" onclick="togglePwd()">👁️</button>
+        </div>
+
+        <button class="btn" type="submit">LOG IN</button>
+      </form>
+
+      <div class="center">
+        <span>Don’t have an account? </span>
+        <a href="signup.html">SIGN UP</a>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function togglePwd(){
+      const p = document.getElementById('password');
+      p.type = p.type === 'password' ? 'text' : 'password';
+    }
+    function doLogin(e){
+      e.preventDefault();
+      alert('Logged in (demo)');
+      return false;
+    }
+  </script>
+</body>
+</html>

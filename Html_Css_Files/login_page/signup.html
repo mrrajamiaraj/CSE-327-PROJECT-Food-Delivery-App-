@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="css/auth.css" />
+</head>
+<body>
+  <div class="screen">
+    <section class="hero" style="align-items:flex-start; padding-top:20px">
+      <button class="link" onclick="history.back()" aria-label="Back">←</button>
+      <div style="margin:auto; text-align:center; transform:translateY(40px)">
+        <h1>Sign Up</h1>
+        <p>Please sign up to get started</p>
+      </div>
+    </section>
+
+    
+    <section class="sheet">
+      <form onsubmit="return doSignup(event)">
+        <label for="name">NAME</label>
+        <input id="name" class="input" type="text" placeholder="John Doe" required />
+
+        <label for="semail">EMAIL</label>
+        <input id="semail" class="input" type="email" placeholder="example@gmail.com" required />
+
+        <label for="spassword">PASSWORD</label>
+        <div class="row">
+          <input id="spassword" class="input" type="password" placeholder="••••••••" required style="flex:1" />
+          <button class="eye" type="button" onclick="toggle('spassword')">👁️</button>
+        </div>
+
+        <label for="repass">RE‑TYPE PASSWORD</label>
+        <div class="row">
+          <input id="repass" class="input" type="password" placeholder="••••••••" required style="flex:1" />
+          <button class="eye" type="button" onclick="toggle('repass')">👁️</button>
+        </div>
+
+        <button class="btn" type="submit">SIGN UP</button>
+      </form>
+    </section>
+  </div>
+
+  <script>
+    function toggle(id){
+      const el = document.getElementById(id);
+      el.type = el.type === 'password' ? 'text' : 'password';
+    }
+    function doSignup(e){
+      e.preventDefault();
+      const p1 = document.getElementById('spassword').value;
+      const p2 = document.getElementById('repass').value;
+      if(p1 !== p2){ alert('Passwords do not match'); return false; }
+      alert('Account created (demo). Please login.');
+      location.href = 'login.html';
+      return false;
+    }
+  </script>
+</body>
+</html>
