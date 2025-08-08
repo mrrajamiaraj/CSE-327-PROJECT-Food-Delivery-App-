@@ -5,12 +5,28 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Log In</title>
   <link rel="stylesheet" href="css/auth.css" />
+  <style>
+    .hero-text {
+      text-align: center;
+      transform: translateY(20px);
+    }
+    .hero-text h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0 0 8px;
+    }
+    .hero-text p {
+      font-size: 14px;
+      color: #c6cbe0;
+      margin: 0;
+    }
+  </style>
 </head>
 <body>
   <div class="screen">
     <!-- Top dark section -->
-    <section class="hero">
-      <div>
+    <section class="hero" style="flex-direction:column; justify-content:flex-end; padding-bottom:30px">
+      <div class="hero-text">
         <h1>Log In</h1>
         <p>Please sign in to your existing account</p>
       </div>
@@ -45,7 +61,9 @@
     }
     function doLogin(e){
       e.preventDefault();
+      
       alert('Logged in (demo)');
+      
       return false;
     }
   </script>
