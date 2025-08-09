@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cart</title>
+  <link rel="stylesheet" href="css/cart.css" />
+</head>
+<body>
+  <div class="screen"><div class="phone">
+
+    <header class="top">
+      <button class="round" onclick="history.back()" aria-label="Back">←</button>
+      <div class="title">Cart</div>
+      <button id="doneBtn" class="done">DONE</button>
+    </header>
+
+    <main class="main">
+      <ul id="list" class="list"></ul>
+    </main>
+
+    <section class="sheet">
+      <div class="addr-row">
+        <div class="label">DELIVERY ADDRESS</div>
+        <button class="edit" id="editAddr">EDIT</button>
+      </div>
+      <div class="addr-box" id="addrBox">Set your address</div>
+
+      <div class="total-row">
+        <span class="total-label">TOTAL:</span>
+        <span id="total" class="total-amt">$0</span>
+        <button class="breakdown" id="breakBtn">Breakdown▾</button>
+      </div>
+
+      <button id="placeBtn" class="cta">PLACE ORDER</button>
+    </section>
+
+  </div></div>
+
+  <script src="js/cart.js"></script>
+</body>
+</html>

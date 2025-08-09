@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Restaurant View</title>
+  <link rel="stylesheet" href="css/restaurant.css" />
+</head>
+<body>
+  <div class="screen"><div class="phone">
+
+    <header class="topbar">
+      <button class="icon" onclick="history.back()" aria-label="Back">←</button>
+      <div class="title">Restaurant View</div>
+      <button class="icon" aria-label="More">⋯</button>
+    </header>
+
+    <main id="content" class="content hidden">
+      <div class="hero">
+        <img id="heroImg" src="img/r1.jpg" alt="">
+      </div>
+
+      <h1 id="rName" class="name">Spicy Restaurant</h1>
+      <p id="rDesc" class="desc">
+        Maecenas sed diam eget risus varius blandit sit amet non magna. Integer
+        posuere erat a ante venenatis dapibus posuere velit aliquet.
+      </p>
+
+      <div class="facts">
+        <div class="fact"><span>⭐</span><b id="rRating">4.7</b></div>
+        <div class="fact"><span>🛵</span><b id="rFee">Free</b></div>
+        <div class="fact"><span>⏱</span><b id="rEta">20 min</b></div>
+      </div>
+
+      <div id="catRow" class="chips"></div>
+
+      <h2 id="sectionTitle" class="section-title">Burger (10)</h2>
+
+      <div id="menuGrid" class="grid"></div>
+    </main>
+
+    <div id="loading" class="loading">Loading…</div>
+
+  </div></div>
+
+  <script src="js/restaurant.js"></script>
+</body>
+</html>

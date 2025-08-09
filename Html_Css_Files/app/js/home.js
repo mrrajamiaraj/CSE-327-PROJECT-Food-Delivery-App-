@@ -126,3 +126,6 @@ applyFilters();
 window.openRestaurant = id => alert('Open restaurant ' + id);
 
 
+window.openRestaurant = (id) => {
+  location.href = `restaurant.html?id=${id}`;
+};
