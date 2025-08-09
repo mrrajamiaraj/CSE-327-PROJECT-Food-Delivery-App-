@@ -19,7 +19,7 @@
 
   <script>
     const askBtn=document.getElementById('askBtn'), errEl=document.getElementById('err');
-    function saveAndGo(lat,lon){localStorage.setItem('user_location',JSON.stringify({lat,lon,ts:Date.now()}));location.href='../splash_screens/welcome.html'}
+    function saveAndGo(lat,lon){localStorage.setItem('user_location',JSON.stringify({lat,lon,ts:Date.now()}));location.href='../app/home.html'}
     function showErr(msg){errEl.textContent=msg;errEl.classList.remove('hidden')}
     askBtn.addEventListener('click',()=>{
       errEl.classList.add('hidden');
