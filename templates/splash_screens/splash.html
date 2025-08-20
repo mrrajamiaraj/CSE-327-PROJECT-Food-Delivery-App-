@@ -1,0 +1,20 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Splash</title>
+  <style>
+    html, body {height:100%;margin:0;background:#fff;display:flex;align-items:center;justify-content:center}
+    .logo {opacity:0;animation:fadeIn 2s ease forwards}
+    @keyframes fadeIn {to{opacity:1}}
+  </style>
+</head>
+<body>
+  <img src="{% static 'splash_screens/logo.png' %}" class="logo" width="140" alt="Food Logo" />
+  <script>
+    setTimeout(() => { window.location.href = "{% url 'onboarding' %}"; }, 2500);
+  </script>
+</body>
+</html>

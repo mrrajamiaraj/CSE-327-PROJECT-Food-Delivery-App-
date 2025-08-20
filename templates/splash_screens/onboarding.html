@@ -1,0 +1,77 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Onboarding</title>
+  <link rel="stylesheet" href="{% static 'splash_screens/css/styles.css' %}">
+  <style>.hidden{display:none}</style>
+</head>
+<body>
+  <div class="wrapper">
+    <section class="card">
+      <div class="hero"><img id="heroImg" src="" alt=""></div>
+
+      <h1 id="title" class="title"></h1>
+      <p id="subtitle" class="subtitle"></p>
+
+      <div class="dots">
+        <span class="dot" id="d0"></span>
+        <span class="dot" id="d1"></span>
+        <span class="dot" id="d2"></span>
+        <span class="dot" id="d3"></span>
+      </div>
+
+      <button id="nextBtn" class="btn">NEXT</button>
+      <a class="link-skip" href="{% url 'login' %}">Skip</a>
+    </section>
+  </div>
+
+  <script>
+    const slides = [
+      {
+        img: "{% static 'splash_screens/img/ob1.png' %}",
+        title: "Free delivery offers",
+        sub: "Get all your loved foods in one place — you just place the order, we do the rest."
+      },
+      {
+        img: "{% static 'splash_screens/img/ob2.png' %}",
+        title: "Order from chosen chef",
+        sub: "Pick your favorite creators and we’ll bring their dishes to your door."
+      },
+      {
+        img: "{% static 'splash_screens/img/ob3.png' %}",
+        title: "All your favorites",
+        sub: "From burgers to biryani — everything you love, in one app."
+      },
+      {
+        img: "{% static 'splash_screens/img/ob4.png' %}",
+        title: "All your favorites",
+        sub: "Get all your loved foods in one place — just order and relax."
+      },
+    ];
+
+    let i = 0;
+    const img = document.getElementById('heroImg');
+    const title = document.getElementById('title');
+    const sub = document.getElementById('subtitle');
+    const nextBtn = document.getElementById('nextBtn');
+    const dots = [0,1,2,3].map(n => document.getElementById('d'+n));
+
+    function render() {
+      const s = slides[i];
+      img.src = s.img; title.textContent = s.title; sub.textContent = s.sub;
+      dots.forEach((d, idx) => d.className = 'dot'+(idx===i?' active':''));
+      nextBtn.textContent = (i === slides.length - 1) ? 'GET STARTED' : 'NEXT';
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (i < slides.length - 1) { i++; render(); }
+      else { window.location.href = "{% url 'login' %}"; }
+    });
+
+    render();
+  </script>
+</body>
+</html>
