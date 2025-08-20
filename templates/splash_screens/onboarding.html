@@ -62,7 +62,7 @@
     function render() {
       const s = slides[i];
       img.src = s.img; title.textContent = s.title; sub.textContent = s.sub;
-      dots.forEach((d, idx) => d.className = 'dot'+(idx===i?' active':''));
+      dots.forEach((d, idx) => d.className = 'dot' + (idx===i ? ' active' : ''));
       nextBtn.textContent = (i === slides.length - 1) ? 'GET STARTED' : 'NEXT';
     }
 
