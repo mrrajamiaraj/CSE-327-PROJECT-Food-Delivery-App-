@@ -5,19 +5,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Home</title>
-
-  <!-- Dashboard CSS -->
   <link rel="stylesheet" href="{% static 'home/css/home.css' %}" />
-
-  
   {% get_static_prefix as STATIC_PREFIX %}
   <script>
     window.STATIC_PREFIX = "{{ STATIC_PREFIX }}";
-    
     window.CURRENT_USER = {
       username: "{{ user.username|default:''|escapejs }}",
       email: "{{ user.email|default_if_none:''|escapejs }}"
     };
+    window.API_BASE = "/api";
   </script>
 </head>
 <body>
@@ -32,7 +28,7 @@
       <div class="deliver">
         <div class="deliver-label">DELIVER TO</div>
         <button id="addrBtn" class="addr">
-          <span id="addrText">Loading...</span>
+          <span id="addrText">Choose location</span>
           <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
             <path fill="#111" d="m7 10l5 5l5-5H7Z"/>
           </svg>
@@ -48,8 +44,7 @@
     </header>
 
     <main class="content">
-      
-      <p class="hello">Hey {{ user.username }}, <b>Welcome back!</b></p>
+      <p class="hello">Hey {{ user.email }}, <b>Good Morning!</b></p>
 
       <label class="search">
         <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
@@ -60,39 +55,30 @@
 
       <div class="row-head">
         <h3>All Categories</h3>
-        <a class="see" href="#">See All</a>
+        <a class="see" href="#" id="seeAllCats">See All</a>
       </div>
-
       <div id="cats" class="cats"></div>
 
       <div class="row-head">
         <h3>Open Restaurants</h3>
-        <a class="see" href="#">See All</a>
+        <a class="see" href="#" id="seeAllRests">See All</a>
       </div>
-
       <div id="restList" class="rests"></div>
     </main>
 
     <aside id="drawer" class="drawer" aria-label="Side menu">
       <div class="drawer-head">
         <div class="user-row">
-          
-          <div class="avatar" id="avatarInitial">
-            {{ user.username|default:"?"|slice:":1"|upper }}
-          </div>
-
+          <div class="avatar" id="avatarInitial">{{ user.username|default:"?"|slice:":1"|upper }}</div>
           <div class="user-meta">
             <div class="u-name" id="uName">{{ user.username }}</div>
-            
             <div class="u-mail">{% if user.email %}{{ user.email }}{% else %}Account{% endif %}</div>
           </div>
         </div>
-
         <button id="closeDrawer" class="xbtn" aria-label="Close menu">✕</button>
       </div>
-
       <nav class="menu">
-        <a href="#">Change Location</a>
+        <a href="#" id="changeLocation">Change Location</a>
         <a href="/login/">Profile / Login</a>
         <a href="#">Orders</a>
         <a href="#">Payments</a>
@@ -102,10 +88,7 @@
     <div id="scrim" class="scrim"></div>
   </div></div>
 
-  
   <script src="{% static 'home/js/home.js' %}"></script>
-
-  
   <script>
     (function () {
       const uname = (window.CURRENT_USER && window.CURRENT_USER.username) || '';
@@ -113,14 +96,12 @@
         const uNameEl = document.getElementById('uName');
         const avEl = document.getElementById('avatarInitial');
         const helloEl = document.querySelector('.hello');
-
         if (uNameEl) uNameEl.textContent = uname;
         if (avEl) avEl.textContent = uname.slice(0,1).toUpperCase();
         if (helloEl) {
-          
           const h = new Date().getHours();
           const tod = h < 12 ? 'Morning' : h < 17 ? 'Afternoon' : 'Evening';
-          helloEl.innerHTML = `Hey ${uname}, <b>Good ${tod}!</b>`;
+          helloEl.innerHTML = `Hey {{ user.email }}, <b>Good ${tod}!</b>`;
         }
       }
     })();

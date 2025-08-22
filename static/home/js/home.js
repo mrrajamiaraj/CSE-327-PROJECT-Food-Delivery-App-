@@ -1,132 +1,177 @@
+const API_BASE = window.API_BASE || '/api';
 
-
-(function greet(){
-  const nm = (localStorage.getItem('user_name') || '').split(' ')[0];
-  const h = new Date().getHours();
-  const tod = h < 12 ? 'Morning' : h < 17 ? 'Afternoon' : 'Evening';
-  document.querySelector('.hello').innerHTML = `Hey ${nm || ''}, <b>Good ${tod}!</b>`;
-  const uName = document.getElementById('uName'); if(uName) uName.textContent = nm || 'Hello';
-})();
-
-(async function setAddress(){
-  const t = document.getElementById('addrText');
-  const loc = JSON.parse(localStorage.getItem('user_location')||'null');
-  if(!loc){ t.textContent = 'Set location'; return; }
-  try{
-    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${loc.lat}&lon=${loc.lon}`, {headers:{'Accept-Language':'en'}});
-    const j = await r.json();
-    t.textContent = j.address?.suburb || j.address?.neighbourhood || j.address?.city || 'Current location';
-  }catch{ t.textContent = 'Current location'; }
-})();
-
-
-document.getElementById('addrBtn').onclick = () => alert('Change location (to be implemented)');
-
-const drawer = document.getElementById('drawer'), scrim = document.getElementById('scrim');
-document.getElementById('menuBtn').onclick = ()=>{ drawer.classList.add('open'); scrim.classList.add('show'); };
-document.getElementById('closeDrawer').onclick = ()=>{ drawer.classList.remove('open'); scrim.classList.remove('show'); };
-scrim.onclick = ()=>{ drawer.classList.remove('open'); scrim.classList.remove('show'); };
-
-document.getElementById('cartBadge').textContent = (JSON.parse(localStorage.getItem('cart')||'[]').length)||0;
-document.getElementById('cartBtn').onclick = ()=> alert('Open cart');
-
-
-const S = (path) => (window.STATIC_PREFIX || '/static/') + 'home/' + path;
-
-const CATS = [
-  {id:'all',     name:'All',        img:S('img/cat-burger.png')},
-  {id:'burger',  name:'Burger',     img:S('img/cat-burger.png')},
-  {id:'pizza',   name:'Pizza',      img:S('img/cat-pizza.png')},
-  {id:'biriyani',name:'Biriyani',   img:S('img/cat-biriyani.png')},
-  {id:'desi',    name:'Deshi foods',img:S('img/cat-desi.png')},
-];
-const catsEl = document.getElementById('cats');
-function renderCats(active='all'){
-  catsEl.innerHTML = CATS.map(c=>`
-    <button class="cat-pill ${c.id===active?'active':''}" data-id="${c.id}">
-      <img src="${c.img}" alt=""><span>${c.name}</span>
-    </button>`).join('');
-  [...catsEl.querySelectorAll('.cat-pill')].forEach(btn=>{
-    btn.onclick = ()=>{ renderCats(btn.dataset.id); activeCat = btn.dataset.id; applyFilters(); };
-  });
-}
-renderCats();
-
-const RESTS = [
-  {id:1,name:'Rose Garden Restaurant',tags:'Burger • Chicken • Rice • Wings',img:S('img/r1.jpg'),rating:4.7,fee:'Free',eta:'20 min',cats:['burger']},
-  {id:2,name:'Green Bowl',tags:'Salad • Deshi',img:S('img/r2.jpg'),rating:4.5,fee:'৳29',eta:'18 min',cats:['desi']},
-  {id:3,name:'Slice & Sip',tags:'Pizza • Coffee',img:S('img/r3.jpg'),rating:4.8,fee:'Free',eta:'15 min',cats:['pizza']},
-  {id:4,name:'Biryani Point',tags:'Biriyani • Kebab',img:S('img/r4.jpg'),rating:4.6,fee:'৳35',eta:'25 min',cats:['biriyani']},
-];
-
-const restContainer = document.getElementById('restSlider') || document.getElementById('restList');
-const useSlider = !!document.getElementById('restSlider');
-
-function restCard(r){
-  if(useSlider){
-    return `
-      <article class="rest-card" onclick="openRestaurant(${r.id})">
-        <img src="${r.img}" alt="">
-        <div class="rest-card-body">
-          <div class="rest-card-title">${r.name}</div>
-          <div class="rest-card-sub">${r.tags}</div>
-          <div class="rest-meta">
-            <span>⭐ ${r.rating}</span>
-            <span>🛵 ${r.fee}</span>
-            <span>⏱ ${r.eta}</span>
-          </div>
-        </div>
-      </article>`;
-  }
-  return `
-    <article class="card" onclick="openRestaurant(${r.id})">
-      <img src="${r.img}" alt="">
-      <div class="card-body">
-        <div class="card-title">${r.name}</div>
-        <div class="card-sub">${r.tags}</div>
-        <div class="meta">
-          <span>⭐ ${r.rating}</span>
-          <span>🛵 ${r.fee}</span>
-          <span>⏱ ${r.eta}</span>
-        </div>
-      </div>
-    </article>`;
-}
-
-function renderRestaurants(items){
-  restContainer.innerHTML = items.map(restCard).join('');
-}
-
-const prevBtn = document.getElementById('restPrev');
-const nextBtn = document.getElementById('restNext');
-if (useSlider && prevBtn && nextBtn){
-  const step = 260;
-  prevBtn.onclick = () => restContainer.scrollBy({left:-step, behavior:'smooth'});
-  nextBtn.onclick = () => restContainer.scrollBy({left: step, behavior:'smooth'});
-}
-
-let activeCat = 'all';
-const searchInput = document.getElementById('search');
-function applyFilters(){
-  const q = (searchInput?.value || '').trim().toLowerCase();
-  let list = RESTS;
-  if (activeCat !== 'all') list = list.filter(r => r.cats.includes(activeCat));
-  if (q) list = list.filter(r => r.name.toLowerCase().includes(q) || r.tags.toLowerCase().includes(q));
-  renderRestaurants(list);
-}
-if (searchInput){
-  searchInput.addEventListener('input', applyFilters);
-}
-
-applyFilters();
-
-
-window.openRestaurant = (id) => {
-  alert('Open restaurant ' + id);
+const state = {
+  restaurants: [],
+  categories: [],
+  selectedRestaurantId: null,
+  selectedCategoryId: null,
+  cartId: null,
+  cartCount: 0,
+  searchQuery: ''
 };
 
+function imgForCategory(name) {
+  const base = (window.STATIC_PREFIX || '') + 'home/img/';
+  const key = (name || '').toLowerCase();
+  if (key.includes('burger')) return base + 'burger.png';
+  if (key.includes('pizza'))  return base + 'pizza.png';
+  if (key.includes('drink'))  return base + 'drink.png';
+  if (key.includes('rice'))   return base + 'rice.png';
+  if (key.includes('chicken'))return base + 'chicken.png';
+  return base + 'food.png';
+}
 
-document.querySelector('.menu a[href="/login/"]')?.addEventListener('click', (e) => {
-  e.preventDefault();
-  location.href = '/login/';
-});
+async function fetchJSON(url, options = {}) {
+  const res = await fetch(url, options);
+  if (!res.ok) throw new Error(res.status);
+  return res.json();
+}
+
+async function ensureCart() {
+  let cid = localStorage.getItem('cart_id');
+  if (!cid) {
+    const data = await fetchJSON(`${API_BASE}/carts/`, { method: 'POST' });
+    cid = data.id;
+    localStorage.setItem('cart_id', cid);
+  }
+  state.cartId = cid;
+}
+
+async function loadCartCount() {
+  if (!state.cartId) return;
+  const data = await fetchJSON(`${API_BASE}/carts/${state.cartId}/`);
+  const count = (data.items || []).reduce((s, it) => s + it.quantity, 0);
+  state.cartCount = count;
+  const badge = document.getElementById('cartBadge');
+  if (badge) badge.textContent = String(count);
+}
+
+async function loadRestaurants() {
+  const data = await fetchJSON(`${API_BASE}/restaurants/`);
+  state.restaurants = data;
+  renderRestaurants();
+}
+
+async function loadCategories() {
+  const first = state.restaurants[0];
+  if (!first) { state.categories = []; renderCategories(); return; }
+  const data = await fetchJSON(`${API_BASE}/categories/?restaurant=${first.id}`);
+  state.selectedRestaurantId = first.id;
+  state.categories = data;
+  renderCategories();
+}
+
+function makeCatPill(cat, active) {
+  const btn = document.createElement('button');
+  btn.className = 'cat-pill' + (active ? ' active' : '');
+  btn.innerHTML = `<img src="${imgForCategory(cat?.name)}" alt=""><span>${cat?.name}</span>`;
+  btn.onclick = () => {
+    state.selectedCategoryId = active ? null : cat.id;
+    renderCategories();
+    renderRestaurants();
+  };
+  return btn;
+}
+
+function renderCategories() {
+  const wrap = document.getElementById('cats');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.className = 'cat-pill' + (state.selectedCategoryId ? '' : ' active');
+  allBtn.innerHTML = `<img src="${imgForCategory('All')}" alt=""><span>All</span>`;
+  allBtn.onclick = () => { state.selectedCategoryId = null; renderCategories(); renderRestaurants(); };
+  wrap.appendChild(allBtn);
+  state.categories.forEach(c => wrap.appendChild(makeCatPill(c, String(state.selectedCategoryId) === String(c.id))));
+}
+
+function restMetaHTML() {
+  return `
+    <div class="meta">
+      <span><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#f59e0b" d="m12 17.27l6.18 3.73l-1.64-7.03L21 9.24l-7.19-.62L12 2L10.19 8.62L3 9.24l4.46 4.73L5.82 21z"/></svg> 4.7</span>
+      <span><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#f59e0b" d="M12 2a8 8 0 0 0-8 8c0 7 8 12 8 12s8-5 8-12a8 8 0 0 0-8-8m0 11a3 3 0 1 1 0-6a3 3 0 0 1 0 6Z"/></svg> Free</span>
+      <span><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#f59e0b" d="M12 3a9 9 0 1 0 9 9a9 9 0 0 0-9-9m.5 4h-1v6l5.25 3.15l.5-.82l-4.75-2.83Z"/></svg> 20 min</span>
+    </div>
+  `;
+}
+
+function restaurantCard(r) {
+  const img = r.image_url || `https://picsum.photos/seed/rest${r.id}/800/500`;
+  return `
+    <div class="card">
+      <img src="${img}" alt="${r.name}" />
+      <div class="card-body">
+        <div class="card-title">${r.name}</div>
+        <div class="card-sub">${r.address || ''}</div>
+        ${restMetaHTML()}
+      </div>
+    </div>
+  `;
+}
+
+function renderRestaurants() {
+  const list = document.getElementById('restList');
+  if (!list) return;
+  const q = (state.searchQuery || '').toLowerCase().trim();
+  let rows = state.restaurants;
+  if (q) {
+    rows = rows.filter(r =>
+      (r.name || '').toLowerCase().includes(q) ||
+      (r.address || '').toLowerCase().includes(q)
+    );
+  }
+  if (state.selectedCategoryId) {
+    const cid = String(state.selectedCategoryId);
+    rows = rows.filter(() => true); // category-driven filtering is app-specific; keep all for now
+  }
+  list.innerHTML = rows.map(restaurantCard).join('');
+}
+
+function wireUI() {
+  const menuBtn = document.getElementById('menuBtn');
+  const drawer = document.getElementById('drawer');
+  const scrim = document.getElementById('scrim');
+  const closeDrawer = document.getElementById('closeDrawer');
+  if (menuBtn && drawer && scrim) {
+    menuBtn.onclick = () => { drawer.classList.add('open'); scrim.classList.add('show'); };
+    closeDrawer.onclick = () => { drawer.classList.remove('open'); scrim.classList.remove('show'); };
+    scrim.onclick = () => { drawer.classList.remove('open'); scrim.classList.remove('show'); };
+  }
+
+  const addrBtn = document.getElementById('addrBtn');
+  const addrText = document.getElementById('addrText');
+  const saved = localStorage.getItem('delivery_addr') || 'Choose location';
+  if (addrText) addrText.textContent = saved;
+  if (addrBtn) {
+    addrBtn.onclick = () => {
+      const v = prompt('Delivery address', localStorage.getItem('delivery_addr') || '');
+      if (v !== null) {
+        localStorage.setItem('delivery_addr', v || 'Choose location');
+        if (addrText) addrText.textContent = v || 'Choose location';
+      }
+    };
+  }
+
+  const search = document.getElementById('search');
+  if (search) {
+    search.oninput = () => {
+      state.searchQuery = search.value;
+      renderRestaurants();
+    };
+  }
+
+  const seeAllCats = document.getElementById('seeAllCats');
+  if (seeAllCats) seeAllCats.onclick = (e) => { e.preventDefault(); state.selectedCategoryId = null; renderCategories(); renderRestaurants(); };
+
+  const seeAllRests = document.getElementById('seeAllRests');
+  if (seeAllRests) seeAllRests.onclick = (e) => { e.preventDefault(); state.searchQuery = ''; if (search) search.value=''; renderRestaurants(); };
+}
+
+async function init() {
+  wireUI();
+  await ensureCart();
+  await Promise.all([loadRestaurants(), loadCartCount()]);
+  await loadCategories();
+}
+
+document.addEventListener('DOMContentLoaded', init);
