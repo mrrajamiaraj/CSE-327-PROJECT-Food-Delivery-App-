@@ -3,8 +3,10 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
+from .services import AuthService
 
 User = get_user_model()
+auth_service = AuthService()
 
 def splash(request):
     return render(request, "splash_screens/splash.html")
@@ -17,12 +19,9 @@ def login_view(request):
         raw_user = request.POST.get("username") or request.POST.get("email") or ""
         password = request.POST.get("password") or ""
         remember = bool(request.POST.get("remember"))
-        username = raw_user.strip().lower()
-        user = authenticate(request, username=username, password=password)
+        user = auth_service.login_user(request, raw_user, password, remember)
         if user:
-            login(request, user)
-            request.session.set_expiry(1209600 if remember else 0)
-            return redirect("location")  # <-- go to location first
+            return redirect("location")  # stays as you requested
         messages.error(request, "Invalid email/username or password.")
     return render(request, "login.html")
 
@@ -33,6 +32,7 @@ def signup_view(request):
         username  = (request.POST.get("username") or email).strip().lower()
         pw1       = request.POST.get("password1") or request.POST.get("password") or ""
         pw2       = request.POST.get("password2") or pw1
+
         if not username or not pw1:
             messages.error(request, "Email/username and password are required.")
         elif pw1 != pw2:
@@ -40,12 +40,14 @@ def signup_view(request):
         elif User.objects.filter(username=username).exists():
             messages.error(request, "This email/username is already taken.")
         else:
-            user = User.objects.create_user(username=username, email=email or None, password=pw1)
-            if name:
-                user.first_name = name
-                user.save()
-            login(request, user)
-            return redirect("location")  
+            auth_service.register_user(
+                request,
+                name=name,
+                email=email,
+                username=username,
+                password=pw1,
+            )
+            return redirect("location")  # stays as you requested
     return render(request, "signup.html")
 
 @login_required
@@ -59,4 +61,3 @@ def logout_view(request):
 @login_required
 def dashboard(request):
     return render(request, "dashboard.html", {"user": request.user})
-
