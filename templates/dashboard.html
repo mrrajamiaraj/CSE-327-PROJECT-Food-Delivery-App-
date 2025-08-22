@@ -6,38 +6,55 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Home</title>
 
-  
+  <!-- Dashboard CSS -->
   <link rel="stylesheet" href="{% static 'home/css/home.css' %}" />
 
   
   {% get_static_prefix as STATIC_PREFIX %}
   <script>
     window.STATIC_PREFIX = "{{ STATIC_PREFIX }}";
+    
+    window.CURRENT_USER = {
+      username: "{{ user.username|default:''|escapejs }}",
+      email: "{{ user.email|default_if_none:''|escapejs }}"
+    };
   </script>
 </head>
 <body>
   <div class="screen"><div class="phone">
     <header class="topbar">
-      <button id="menuBtn" class="circle">
-        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#111" d="M4 6h16v2H4V6m0 5h16v2H4v-2m0 5h10v2H4v-2Z"/></svg>
+      <button id="menuBtn" class="circle" aria-label="Open menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#111" d="M4 6h16v2H4V6m0 5h16v2H4v-2m0 5h10v2H4v-2Z"/>
+        </svg>
       </button>
 
       <div class="deliver">
         <div class="deliver-label">DELIVER TO</div>
-        <button id="addrBtn" class="addr"><span id="addrText">Loading...</span> <svg width="14" height="14" viewBox="0 0 24 24"><path fill="#111" d="m7 10l5 5l5-5H7Z"/></svg></button>
+        <button id="addrBtn" class="addr">
+          <span id="addrText">Loading...</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#111" d="m7 10l5 5l5-5H7Z"/>
+          </svg>
+        </button>
       </div>
 
-      <button id="cartBtn" class="circle">
-        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#111" d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4Zm10 0a2 2 0 1 0 .001 3.999A2 2 0 0 0 17 18ZM7.2 14h9.8a2 2 0 0 0 1.95-1.56L21 6H6.21L5.27 2.96H2v2h2.11L6.8 14Z"/></svg>
+      <button id="cartBtn" class="circle" aria-label="Open cart">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#111" d="M7 18a2 2 0 1 0 0 4a2 2 0 0 0 0-4Zm10 0a2 2 0 1 0 .001 3.999A2 2 0 0 0 17 18ZM7.2 14h9.8a2 2 0 0 0 1.95-1.56L21 6H6.21L5.27 2.96H2v2h2.11L6.8 14Z"/>
+        </svg>
         <span id="cartBadge" class="badge">0</span>
       </button>
     </header>
 
     <main class="content">
-      <p class="hello">Hey, <b>Good Afternoon!</b></p>
+      
+      <p class="hello">Hey {{ user.username }}, <b>Welcome back!</b></p>
 
       <label class="search">
-        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#98a2b3" d="m21 20.3l-5.6-5.6a7 7 0 1 0-1.4 1.4l5.6 5.6l1.4-1.4ZM5 10a5 5 0 1 1 10 0a5 5 0 0 1-10 0Z"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#98a2b3" d="m21 20.3l-5.6-5.6a7 7 0 1 0-1.4 1.4l5.6 5.6l1.4-1.4ZM5 10a5 5 0 1 1 10 0a5 5 0 0 1-10 0Z"/>
+        </svg>
         <input id="search" placeholder="Search dishes, restaurants" />
       </label>
 
@@ -56,20 +73,27 @@
       <div id="restList" class="rests"></div>
     </main>
 
-    <aside id="drawer" class="drawer">
+    <aside id="drawer" class="drawer" aria-label="Side menu">
       <div class="drawer-head">
         <div class="user-row">
-          <div class="avatar">H</div>
+          
+          <div class="avatar" id="avatarInitial">
+            {{ user.username|default:"?"|slice:":1"|upper }}
+          </div>
+
           <div class="user-meta">
-            <div class="u-name" id="uName">Hello</div>
-            <div class="u-mail">Account</div>
+            <div class="u-name" id="uName">{{ user.username }}</div>
+            
+            <div class="u-mail">{% if user.email %}{{ user.email }}{% else %}Account{% endif %}</div>
           </div>
         </div>
-        <button id="closeDrawer" class="xbtn">✕</button>
+
+        <button id="closeDrawer" class="xbtn" aria-label="Close menu">✕</button>
       </div>
+
       <nav class="menu">
         <a href="#">Change Location</a>
-        <a href="/login/">Profile / Login</a>  
+        <a href="/login/">Profile / Login</a>
         <a href="#">Orders</a>
         <a href="#">Payments</a>
         <a href="#">Help</a>
@@ -80,5 +104,26 @@
 
   
   <script src="{% static 'home/js/home.js' %}"></script>
+
+  
+  <script>
+    (function () {
+      const uname = (window.CURRENT_USER && window.CURRENT_USER.username) || '';
+      if (uname) {
+        const uNameEl = document.getElementById('uName');
+        const avEl = document.getElementById('avatarInitial');
+        const helloEl = document.querySelector('.hello');
+
+        if (uNameEl) uNameEl.textContent = uname;
+        if (avEl) avEl.textContent = uname.slice(0,1).toUpperCase();
+        if (helloEl) {
+          
+          const h = new Date().getHours();
+          const tod = h < 12 ? 'Morning' : h < 17 ? 'Afternoon' : 'Evening';
+          helloEl.innerHTML = `Hey ${uname}, <b>Good ${tod}!</b>`;
+        }
+      }
+    })();
+  </script>
 </body>
 </html>
