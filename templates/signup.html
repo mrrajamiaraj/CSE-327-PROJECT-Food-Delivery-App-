@@ -8,45 +8,63 @@
   <link rel="stylesheet" href="{% static 'css/auth.css' %}">
 </head>
 <body class="auth-body">
-  <header class="auth-hero">
-    <a class="back-btn" href="{% url 'login' %}" aria-label="Back">←</a>
-    <div class="hero-content">
-      <h1>Sign Up</h1>
-      <p>Please sign up to get started</p>
-    </div>
-  </header>
-
-  <main class="auth-sheet">
-    <form class="auth-form" action="{% url 'signup' %}" method="post" novalidate>
-      {% csrf_token %}
-
-      <label class="label">NAME</label>
-      <input name="name" type="text" class="input" placeholder="John Doe" required>
-
-      <label class="label">EMAIL</label>
-      <input name="email" type="email" class="input" placeholder="example@gmail.com" required>
-
-      <label class="label">PASSWORD</label>
-      <div class="row">
-        <input id="pw1" name="password1" type="password" class="input" placeholder="••••••••" required>
-        <button class="eye" type="button" onclick="togglePwd('pw1')">👁️</button>
+  <div class="auth-stack">
+    <header class="auth-hero">
+      <a class="back-btn" href="{% url 'login' %}" aria-label="Back" data-transition>←</a>
+      <div class="hero-content">
+        <h1>Sign Up</h1>
+        <p>Please sign up to get started</p>
       </div>
+    </header>
 
-      <label class="label">RE‑TYPE PASSWORD</label>
-      <div class="row">
-        <input id="pw2" name="password2" type="password" class="input" placeholder="••••••••" required>
-        <button class="eye" type="button" onclick="togglePwd('pw2')">👁️</button>
+    <main class="auth-card">
+      <form class="auth-form" action="{% url 'signup' %}" method="post" novalidate>
+        {% csrf_token %}
+
+        <label class="label" for="id_name">NAME</label>
+        <input id="id_name" name="name" type="text" class="input" placeholder="John doe" required>
+
+        <label class="label" for="id_email">EMAIL</label>
+        <input id="id_email" name="email" type="email" class="input" placeholder="example@gmail.com" required>
+
+        <label class="label" for="id_pw1">PASSWORD</label>
+        <div class="row">
+          <input id="id_pw1" name="password1" type="password" class="input" placeholder="••••••••" required>
+          <button class="eye" type="button" onclick="togglePwd('id_pw1')" aria-label="Show/Hide password">👁️</button>
+        </div>
+
+        <label class="label" for="id_pw2">RE‑TYPE PASSWORD</label>
+        <div class="row">
+          <input id="id_pw2" name="password2" type="password" class="input" placeholder="••••••••" required>
+          <button class="eye" type="button" onclick="togglePwd('id_pw2')" aria-label="Show/Hide password">👁️</button>
+        </div>
+
+        <button class="btn-primary" type="submit">SIGN UP</button>
+      </form>
+
+      <div class="center mt-16">
+        <span>Already have an account? </span>
+        <a class="accent-link" href="{% url 'login' %}" data-transition>LOG IN</a>
       </div>
-
-      <button class="btn-primary" type="submit">SIGN UP</button>
-    </form>
-  </main>
+    </main>
+  </div>
 
   <script>
-    function togglePwd(id){
-      const el = document.getElementById(id);
-      el.type = el.type === 'password' ? 'text' : 'password';
+    function togglePwd(id){const el=document.getElementById(id); el.type = el.type==='password'?'text':'password';}
+
+    // Smooth page switch
+    function transitionTo(href){
+      if(document.startViewTransition){
+        document.startViewTransition(()=>{ window.location.href = href; });
+      } else {
+        document.body.classList.add('fade-out');
+        setTimeout(()=>window.location.href=href,150);
+      }
     }
+    document.addEventListener('click',(e)=>{
+      const a=e.target.closest('a[data-transition]'); if(!a) return;
+      e.preventDefault(); transitionTo(a.href);
+    });
   </script>
 </body>
 </html>
