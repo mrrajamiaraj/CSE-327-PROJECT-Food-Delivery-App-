@@ -1,7 +1,7 @@
 :root{
-  --brand:#ff6a00;       /* orange for buttons/dots */
-  --text:#0f172a;        /* dark title */
-  --muted:#6b7280;       /* gray paragraph */
+  --brand:#ff6a00;       
+  --text:#0f172a;        
+  --muted:#6b7280;       
   --radius:16px;
 }
 

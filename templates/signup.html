@@ -1,83 +1,51 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Sign Up</title>
-  <link rel="stylesheet" href="css/auth.css" />
-  <style>
-    .hero-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      transform: translateY(-10px);
-      position: relative;
-    }
-    .back-btn {
-      position: absolute;
-      left: 16px;
-      top: 16px;
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 20px;
-      cursor: pointer;
-    }
-  </style>
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
 </head>
-<body>
-  <div class="screen">
-    <section class="hero">
-      <div class="hero-content">
-        <button class="back-btn" onclick="history.back()" aria-label="Back">←</button>
-        <h1>Sign Up</h1>
-        <p>Please sign up to get started</p>
+<body class="auth-body">
+  <header class="auth-hero">
+    <a class="back-btn" href="{% url 'login' %}" aria-label="Back">←</a>
+    <div class="hero-content">
+      <h1>Sign Up</h1>
+      <p>Please sign up to get started</p>
+    </div>
+  </header>
+
+  <main class="auth-sheet">
+    <form class="auth-form" action="{% url 'signup' %}" method="post" novalidate>
+      {% csrf_token %}
+
+      <label class="label">NAME</label>
+      <input name="name" type="text" class="input" placeholder="John Doe" required>
+
+      <label class="label">EMAIL</label>
+      <input name="email" type="email" class="input" placeholder="example@gmail.com" required>
+
+      <label class="label">PASSWORD</label>
+      <div class="row">
+        <input id="pw1" name="password1" type="password" class="input" placeholder="••••••••" required>
+        <button class="eye" type="button" onclick="togglePwd('pw1')">👁️</button>
       </div>
-    </section>
 
-    <section class="sheet">
-      <form onsubmit="return doSignup(event)">
-        <label for="name">NAME</label>
-        <input id="name" class="input" type="text" placeholder="raja mia raj" required />
+      <label class="label">RE‑TYPE PASSWORD</label>
+      <div class="row">
+        <input id="pw2" name="password2" type="password" class="input" placeholder="••••••••" required>
+        <button class="eye" type="button" onclick="togglePwd('pw2')">👁️</button>
+      </div>
 
-        <label for="semail">EMAIL</label>
-        <input id="semail" class="input" type="email" placeholder="example@gmail.com" required />
-
-        <label for="spassword">PASSWORD</label>
-        <div class="row">
-          <input id="spassword" class="input" type="password" placeholder="••••••••" required style="flex:1" />
-          <button class="eye" type="button" onclick="toggle('spassword')">👁️</button>
-        </div>
-
-        <label for="repass">RE-TYPE PASSWORD</label>
-        <div class="row">
-          <input id="repass" class="input" type="password" placeholder="••••••••" required style="flex:1" />
-          <button class="eye" type="button" onclick="toggle('repass')">👁️</button>
-        </div>
-
-        <button class="btn" type="submit">SIGN UP</button>
-      </form>
-    </section>
-  </div>
+      <button class="btn-primary" type="submit">SIGN UP</button>
+    </form>
+  </main>
 
   <script>
-    function toggle(id){
+    function togglePwd(id){
       const el = document.getElementById(id);
       el.type = el.type === 'password' ? 'text' : 'password';
-    }
-    function doSignup(e){
-      e.preventDefault();
-      const p1 = document.getElementById('spassword').value;
-      const p2 = document.getElementById('repass').value;
-      if(p1 !== p2){
-        alert('Passwords do not match');
-        return false;
-      }
-      alert('Account created (demo)');
-      location.href = 'login.html';
-      return false;
     }
   </script>
 </body>

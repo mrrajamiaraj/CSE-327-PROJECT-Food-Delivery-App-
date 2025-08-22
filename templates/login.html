@@ -1,72 +1,65 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Log In</title>
-  <link rel="stylesheet" href="css/auth.css" />
-  <style>
-    .hero {
-      align-items: center !important;
-      justify-content: center !important;
-      padding-bottom: 0 !important;
-    }
-    .hero-content {
-      text-align: center;
-      transform: translateY(-10px);
-    }
-    .hero-content h1 {
-      margin: 0 0 6px;
-      font-size: 28px;
-      font-weight: 800;
-    }
-    .hero-content p {
-      margin: 0;
-      font-size: 14px;
-      color: #c6cbe0;
-    }
-  </style>
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
 </head>
-<body>
-  <div class="screen">
-    <section class="hero">
-      <div class="hero-content">
-        <h1>Log In</h1>
-        <p>Please sign in to your existing account</p>
+<body class="auth-body">
+  
+  <header class="auth-hero">
+    <button class="back-btn" onclick="history.back()" aria-label="Back">←</button>
+    <div class="hero-content">
+      <h1>Log In</h1>
+      <p>Please sign in to your existing account</p>
+    </div>
+  </header>
+
+  
+  <main class="auth-sheet">
+    <form class="auth-form" action="{% url 'login' %}" method="post" novalidate>
+      {% csrf_token %}
+
+      <label class="label">EMAIL</label>
+      <input name="username" type="email" class="input" placeholder="example@gmail.com" required>
+
+      <div class="row-space">
+        <label class="label">PASSWORD</label>
+        <a class="muted-link" href="#">Forgot Password</a>
       </div>
-    </section>
-
-    <section class="sheet">
-      <form onsubmit="return doLogin(event)">
-        <label for="email">EMAIL</label>
-        <input id="email" class="input" type="email" placeholder="example@gmail.com" required />
-
-        <label for="password">PASSWORD</label>
-        <div class="row">
-          <input id="password" class="input" type="password" placeholder="••••••••" required style="flex:1" />
-          <button class="eye" type="button" onclick="togglePwd()">👁️</button>
-        </div>
-
-        <button class="btn" type="submit">LOG IN</button>
-      </form>
-
-      <div class="center">
-        <span>Don’t have an account? </span>
-        <a href="signup.html">SIGN UP</a>
+      <div class="row">
+        <input id="password" name="password" type="password" class="input" placeholder="••••••••" required>
+        <button class="eye" type="button" onclick="togglePwd('password')"
+                aria-label="Show/Hide password">👁️</button>
       </div>
-    </section>
-  </div>
+
+      <label class="check">
+        <input type="checkbox" name="remember"> <span>Remember me</span>
+      </label>
+
+      <button class="btn-primary" type="submit">LOG IN</button>
+    </form>
+
+    <div class="center mt-16">
+      <span>Don’t have an account? </span>
+      <a class="accent-link" href="{% url 'signup' %}">SIGN UP</a>
+    </div>
+
+    <div class="center or">Or</div>
+
+    <div class="social-row">
+      <button class="social btn-fb" type="button" aria-label="Continue with Facebook">f</button>
+      <button class="social btn-tw" type="button" aria-label="Continue with Twitter">t</button>
+      <button class="social btn-ap" type="button" aria-label="Continue with Apple"></button>
+    </div>
+  </main>
 
   <script>
-    function togglePwd(){
-      const p = document.getElementById('password');
-      p.type = p.type === 'password' ? 'text' : 'password';
-    }
-    function doLogin(e){
-      e.preventDefault();
-      alert('Logged in (demo)');
-      location.href='../permissions/location.html';
-      return false;
+    function togglePwd(id){
+      const el = document.getElementById(id);
+      el.type = el.type === 'password' ? 'text' : 'password';
     }
   </script>
 </body>
