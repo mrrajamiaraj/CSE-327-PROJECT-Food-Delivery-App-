@@ -56,7 +56,7 @@ const RESTS = [
   {id:1,name:'Rose Garden Restaurant',tags:'Burger • Chicken • Rice • Wings',img:S('img/r1.jpg'),rating:4.7,fee:'Free',eta:'20 min',cats:['burger']},
   {id:2,name:'Green Bowl',tags:'Salad • Deshi',img:S('img/r2.jpg'),rating:4.5,fee:'৳29',eta:'18 min',cats:['desi']},
   {id:3,name:'Slice & Sip',tags:'Pizza • Coffee',img:S('img/r3.jpg'),rating:4.8,fee:'Free',eta:'15 min',cats:['pizza']},
-  {id:4,name:'Biryani Point',tags:'Biriyani • Kebab',img:S('img/r2.jpg'),rating:4.6,fee:'৳35',eta:'25 min',cats:['biriyani']},
+  {id:4,name:'Biryani Point',tags:'Biriyani • Kebab',img:S('img/r4.jpg'),rating:4.6,fee:'৳35',eta:'25 min',cats:['biriyani']},
 ];
 
 const restContainer = document.getElementById('restSlider') || document.getElementById('restList');
